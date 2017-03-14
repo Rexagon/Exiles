@@ -7,7 +7,9 @@ class Transformable
 public:
 	Transformable();
 
+	// Восстанавливает позицию, поворот, растяжение из матрицы
 	virtual void SetTransformation(const mat4& transformation);
+
 	virtual mat4 GetTransformation();
 
 	virtual void SetPosition(float x, float y, float z);

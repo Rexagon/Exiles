@@ -113,7 +113,7 @@ vec2 Input::GetMousePosition()
 	return vec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
 }
 
-void Input::SetCursor(bool visible)
+void Input::SetCursorVisible(bool visible)
 {
 	if (visible)
 		SDL_ShowCursor(1);

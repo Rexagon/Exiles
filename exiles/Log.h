@@ -14,8 +14,11 @@ public:
 		ALL
 	};
 
+	// Создаёт файл для записи логов
+	//@ если такой файл был, то перезаписывает
 	static void Create(const std::string& path = "log.txt", Targets target = Targets::ALL);
 
+	// Выводит дату и аргументы в лог через пробел. После последнего - перенос строки
 	template<class Arg, class... Args>
 	static void Write(Arg&& arg, Args&&... args)
 	{

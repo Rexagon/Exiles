@@ -133,19 +133,33 @@ public:
 		RightGUI = 231, /**< windows, command (apple), meta */
 	};
 
+	// Обновляет состояния клавиш
 	static void Update();
 
+	// Нажата ли клавиша в текущий момент
 	static bool GetKey(Key keyCode);
+
+	// Произошло ли нажатие клавиши в этом кадре
 	static bool GetKeyDown(Key keyCode);
+
+	// Отпустили ли клавишу в этом кадре
 	static bool GetKeyUp(Key keyCode);
 
+
+	// Нажата ли кнопка мыши в текущий момент
 	static bool GetMouse(Mouse button);
+
+	// Произошло ли нажатие кнопки мыши в этом кадре
 	static bool GetMouseDown(Mouse button);
+
+	// Отпустили ли кнопку мыши в этом кадре
 	static bool GetMouseUp(Mouse button);
 
+	// Позиция курсора относительно левого верхнего угла окна
 	static vec2 GetMousePosition();
 
-	static void SetCursor(bool value);
+	// Устанавливает видимость курсора
+	static void SetCursorVisible(bool visible);
 	//static void SetMousePosition(const vec2& pos);
 protected:
 private:

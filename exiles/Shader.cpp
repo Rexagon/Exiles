@@ -154,7 +154,7 @@ void Shader::Unbind()
 	glUseProgram(0);
 }
 
-void Shader::AddAttribute(const std::string &name, unsigned int index)
+void Shader::SetAttribute(const std::string &name, unsigned int index)
 {
 	glBindAttribLocation(m_id, index, name.c_str());
 }
