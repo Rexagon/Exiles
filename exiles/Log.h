@@ -23,21 +23,20 @@ public:
 	static void Write(Arg&& arg, Args&&... args)
 	{
 		if (m_target == Targets::FILE || m_target == Targets::ALL) {
-			WriteStream(m_file, arg, args...);
+			WriteToStream(m_file, arg, args...);
 		}
 		if (m_target == Targets::CONSOLE || m_target == Targets::ALL) {
-			WriteStream(std::cout, arg, args...);
+			WriteToStream(std::cout, arg, args...);
 		}
 	}
 private:
 	template<class Arg, class... Args>
-	static void WriteStream(std::ostream& out, Arg&& arg, Args&&... args)
+	static void WriteToStream(std::ostream& out, Arg&& arg, Args&&... args)
 	{
 		out << GetDate() << std::forward<Arg>(arg);
 		using dummy = int[];
-		(void)dummy {
-			0, (void(out << ' ' << std::forward<Args>(args)), 0)...
-		};
+		(void)dummy{0, (void(out << ' ' << std::forward<Args>(args)), 0)...};
+
 		out << std::endl;
 	}
 

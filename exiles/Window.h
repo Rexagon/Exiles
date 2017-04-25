@@ -9,44 +9,81 @@
 class Window
 {
 public:
-	static void Create(const std::string& title, int width, int height);
-	static void Close();
+	// Инициализирует SDL, создаёт окно с неизменяемыми заданными размерами,
+	// инициализирует контекст OpenGL и glew
+	Window(const std::string& title, int width, int height);
 
-	static void SetFullscreen(bool fullscreen);
-	static void SetVSync(bool vsync);
+	// Удаляет контекст OpenGL, закрывает окно и чистит состояние SDL 
+	~Window();
 
-	static void Clear();
-	static void Clear(float r, float g, float b, float a);
-	static void Display();
+	// Заливает окно цветом, заданным с помощью SetClearColor
+	void Clear();
 
-	static void SetTitle(const std::string& title);
-	static std::string GetTitle() { return m_title; }
+	// Обновляет буффер окна, выводя всё нарисованное
+	void Display();
 
-	static void SetSize(int width, int height);
-	static ivec2 GetSize() { return m_size; }
-	static float GetAspect() { return m_aspect; }
+	// Устанавливает позицию курсора относительно верхнего левого края окна
+	void SetMousePosition(int x, int y);
 
-	static bool IsOpen() { return m_isOpen; }
-	static bool IsFocused() { return m_isFocused; }
+	// Возвращает текущую позицию курсора относительно верхнего левого края окна
+	ivec2 GetMousePosition();
 
-	static void SetClearColor(const vec3& color) { m_clearColor = color; }
-	static vec3 GetClearColor() { return m_clearColor; }
+	// Возвращает объект SDL_Window
+	SDL_Window* GetSDLWindow() { return m_window; }
 
-	static void SetMousePosition(int x, int y);
-	static ivec2 GetMousePosition();
+	// Возвращает текущий контект OpenGL
+	SDL_GLContext* GetOpenGLContext() { return &m_context; }
+
+	// Устанавливает видимость курсора
+	void SetCursorVisible(bool visible);
+
+	// Установка режима полного экрана
+	//@ при установке размер окна измениться до размера экрана
+	//@ при выходе из режима полного экрана размер окна не измениться
+	void SetFullscreenEnabled(bool fullscreen);
+
+	// Находиться ли окно в режиме полного экрана
+	bool IsFullscreenEnabled() const { return m_isFullscreen; }
+
+	// Установка вертикальной синхронизации
+	void SetVSyncEnabled(bool vsync);
+
+	// Включён ли режим вертикальной синхронизации
+	bool IsVSyncEnabled() const { return m_isVsyncEnabled; }
+
+	// Меняет заголовок окна на указанный
+	void SetTitle(const std::string& title);
+
+	// Возвращает текущий заголовок окна
+	std::string GetTitle() { return m_title; }
+
+	// Устанавливает размеры окна
+	void SetSize(int width, int height);
+
+	// Возвращает текущие размеры окна
+	ivec2 GetSize() const { return m_size; }
+
+	// Возвращает отношение ширины окна к его высоте
+	float GetAspect() { return m_aspect; }
+
+	// Устанавливает цвет заливки окна
+	//@ может меняться извне с помощью вызова функции glClearColor()
+	//TODO: придумать как с этим быть
+	void SetClearColor(const vec4& color);
+
+	// Возвращает текущий цвет заливки окна
+	//@ возвращает именно цвет, заданный с помощью SetClearColor()
+	//TODO: придумать как с этим быть
+	vec3 GetClearColor() const { return m_clearColor; }
 private:
-	friend class Input;
+	std::string m_title;
+	ivec2 m_size;
+	float m_aspect;
 
-	static std::string m_title;
+	bool m_isFullscreen;
+	bool m_isVsyncEnabled;
+	vec4 m_clearColor;
 
-	static ivec2 m_size;
-	static float m_aspect;
-
-	static vec3 m_clearColor;
-
-	static bool m_isOpen;
-	static bool m_isFocused;
-
-	static SDL_Window* m_window;
-	static SDL_GLContext m_context;
+	SDL_Window* m_window;
+	SDL_GLContext m_context;
 };

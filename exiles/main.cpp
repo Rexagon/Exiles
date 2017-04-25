@@ -6,14 +6,9 @@
 int main()
 {
 	try {
-		Log::Create();
-
-		Window::Create("Exiles", 800, 600);
-
+		Core::Init("Exiles");
 		Core::Push<MainMenu>();
 		Core::Run();
-
-		Window::Close();
 	}
 	catch (const std::exception& e) {
 		Log::Write("[ERROR]", e.what());

@@ -247,13 +247,19 @@ void Shader::SetUniformArray(const std::string & name, ivec3* arr, int size)
 // TextureAsset //
 //////////////////
 
-ShaderAsset::ShaderAsset(const std::string & vertexPart, const std::string & fragmentPart) :
-	m_vertexPart(vertexPart), m_fragmentPart(fragmentPart)
+ShaderAsset::ShaderAsset(const std::string & vertexPartPath, 
+						 const std::string & fragmentPartPath) :
+	m_vertexPart(vertexPartPath), 
+	m_fragmentPart(fragmentPartPath)
 {
 }
 
-ShaderAsset::ShaderAsset(const std::string & vertexPart, const std::string & geometryPart, const std::string & fragmentPart) :
-	m_vertexPart(vertexPart), m_geometryPart(geometryPart), m_fragmentPart(fragmentPart)
+ShaderAsset::ShaderAsset(const std::string & vertexPartPath, 
+						 const std::string & geometryPartPath, 
+						 const std::string & fragmentPartPath) :
+	m_vertexPart(vertexPartPath), 
+	m_geometryPart(geometryPartPath), 
+	m_fragmentPart(fragmentPartPath)
 {
 }
 

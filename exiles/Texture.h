@@ -9,10 +9,14 @@ class Texture : public Asset
 public:
 	Texture();
 	virtual ~Texture();
-
+	
+	// Загружает изображение с помощью FileSystem
 	void LoadFromFile(const std::string& path);
+
+	// Загружает изображение из памяти
 	void LoadFromMemory(const void* data, unsigned int size);
 
+	// Привязывает текстуру к GL_TEXTUREunit
 	void Bind(unsigned int unit);
 
 	GLuint GetId();

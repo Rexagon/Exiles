@@ -3,40 +3,13 @@
 #include <GL\glew.h>
 #include <SDL2\SDL.h>
 
-std::string Window::m_title;
-float Window::m_aspect = 0;
-ivec2 Window::m_size;
-vec3 Window::m_clearColor = vec3(0.2f, 0.2f, 0.2f);
-bool Window::m_isOpen = false;
-bool Window::m_isFocused = true;
-SDL_Window* Window::m_window = nullptr;
-SDL_GLContext Window::m_context = 0;
-
-void Window::Create(const std::string & title, int width, int height)
+Window::Window(const std::string & title, int width, int height)
 {
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-
-	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		throw std::runtime_error("Unable to init SDL2");
-	}
-
 	m_aspect = static_cast<float>(width) / static_cast<float>(height);
 	m_size = ivec2(width, height);
 
 	m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
-	if (!m_window) {
+	if (m_window == nullptr) {
 		throw std::runtime_error("Unable to create window");
 	}
 
@@ -44,56 +17,22 @@ void Window::Create(const std::string & title, int width, int height)
 	if (glewInit() != GLEW_OK) {
 		throw std::runtime_error("Unable to init glew");
 	}
-
-	m_isOpen = true;
 }
 
-void Window::Close()
+Window::~Window()
 {
 	SDL_GL_DeleteContext(m_context);
 	SDL_DestroyWindow(m_window);
-	SDL_Quit();
-	m_isOpen = false;
-}
-
-void Window::SetFullscreen(bool fullscreen)
-{
-	SDL_SetWindowFullscreen(m_window, static_cast<int>(fullscreen));
-}
-
-void Window::SetVSync(bool vsync)
-{
-	SDL_GL_SetSwapInterval(static_cast<int>(vsync));
 }
 
 void Window::Clear()
 {
-	glClearColor(m_clearColor.x, m_clearColor.y, m_clearColor.z, 1.0f);
-	glViewport(0, 0, m_size.x, m_size.y);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void Window::Clear(float r, float g, float b, float a)
-{
-	glClearColor(r, g, b, a);
-	glViewport(0, 0, m_size.x, m_size.y);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::Display()
 {
 	SDL_GL_SwapWindow(m_window);
-}
-
-void Window::SetTitle(const std::string & title)
-{
-	SDL_SetWindowTitle(m_window, title.c_str());
-}
-
-void Window::SetSize(int width, int height)
-{
-	SDL_SetWindowSize(m_window, width, height);
-	m_aspect = static_cast<float>(width) / static_cast<float>(height);
 }
 
 void Window::SetMousePosition(int x, int y)
@@ -103,7 +42,42 @@ void Window::SetMousePosition(int x, int y)
 
 ivec2 Window::GetMousePosition()
 {
-	ivec2 mousePosition;
-	SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
-	return mousePosition;
+	ivec2 position;
+	SDL_GetMouseState(&position.x, &position.y);
+	return position;
+}
+
+void Window::SetCursorVisible(bool visible)
+{
+	SDL_ShowCursor(static_cast<int>(visible));
+}
+
+void Window::SetFullscreenEnabled(bool fullscreen)
+{
+	m_isFullscreen = fullscreen;
+	SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN & m_isFullscreen);
+}
+
+void Window::SetVSyncEnabled(bool vsync)
+{
+	m_isVsyncEnabled = vsync;
+	SDL_GL_SetSwapInterval(static_cast<int>(m_isVsyncEnabled));
+}
+
+void Window::SetTitle(const std::string & title)
+{
+	m_title = title;
+	SDL_SetWindowTitle(m_window, m_title.c_str());
+}
+
+void Window::SetSize(int width, int height)
+{
+	m_size = ivec2(width, height);
+	SDL_SetWindowSize(m_window, m_size.x, m_size.y);
+}
+
+void Window::SetClearColor(const vec4 & color)
+{
+	m_clearColor = color;
+	glClearColor(m_clearColor.r, m_clearColor.g, m_clearColor.b, m_clearColor.a);
 }

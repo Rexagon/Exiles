@@ -1,20 +1,22 @@
 #pragma once
 
+#include <vector>
+
 #include "Math.h"
 
 class Input
 {
 public:
-	enum class Mouse
+	enum Mouse
 	{
-		Left = 1,
-		Middle = 2,
-		Right = 3,
+		ButtonLeft = 1,
+		ButtonMiddle = 2,
+		ButtonRight = 3,
 		WheelUp = 4,
 		WheelDown = 5
 	};
 
-	enum class Key
+	enum Key
 	{
 		Unknown = 0,
 
@@ -156,13 +158,20 @@ public:
 	static bool GetMouseUp(Mouse button);
 
 	// ѕозици€ курсора относительно левого верхнего угла окна
-	static vec2 GetMousePosition();
-
-	// ”станавливает видимость курсора
-	static void SetCursorVisible(bool visible);
-	//static void SetMousePosition(const vec2& pos);
-protected:
+	static ivec2 GetMousePosition();
 private:
+	friend class Core;
+
+	const static int NUM_KEYS;
+	const static int NUM_MOUSEBUTTONS;
+
+	static ivec2 m_mousePosition;
+
+	static std::vector<bool> m_currentKeysState;
+	static std::vector<bool> m_lastKeysState;
+
+	static std::vector<bool> m_currentMouseButtonsState;
+	static std::vector<bool> m_lastMouseButtonsState;
 };
 
 using Key = Input::Key;

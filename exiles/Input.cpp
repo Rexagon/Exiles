@@ -5,118 +5,58 @@
 #include "Core.h"
 #include "Window.h"
 
-const static int NUM_KEYS = 512;
-const static int NUM_MOUSEBUTTONS = 256;
+const int Input::NUM_KEYS = 512;
+const int Input::NUM_MOUSEBUTTONS = 256;
 
-static int mouseX = 0;
-static int mouseY = 0;
+ivec2 Input::m_mousePosition = ivec2(0, 0);
 
-static bool inputs[NUM_KEYS];
-static bool downKeys[NUM_KEYS];
-static bool upKeys[NUM_KEYS];
+std::vector<bool> Input::m_currentKeysState = std::vector<bool>(NUM_KEYS, false);
+std::vector<bool> Input::m_lastKeysState = std::vector<bool>(NUM_KEYS, false);
 
-static bool mouseInput[NUM_MOUSEBUTTONS];
-static bool downMouse[NUM_MOUSEBUTTONS];
-static bool upMouse[NUM_MOUSEBUTTONS];
+std::vector<bool> Input::m_currentMouseButtonsState = std::vector<bool>(NUM_MOUSEBUTTONS, false);
+std::vector<bool> Input::m_lastMouseButtonsState = std::vector<bool>(NUM_MOUSEBUTTONS, false);
 
 void Input::Update()
 {
-	for (int i = 0; i < NUM_MOUSEBUTTONS; i++) {
-		downMouse[i] = false;
-		upMouse[i] = false;
-	}
-
-	for (int i = 0; i < NUM_KEYS; i++) {
-		downKeys[i] = false;
-		upKeys[i] = false;
-	}
-
-	SDL_Event e;
-
-	while (SDL_PollEvent(&e)) {
-		int value = 0;
-
-		switch (e.type) {
-		case SDL_QUIT:
-			Core::Stop();
-			break;
-
-		case SDL_WINDOWEVENT_FOCUS_GAINED:
-			Window::m_isFocused = true;
-			break;
-		case SDL_WINDOWEVENT_FOCUS_LOST: 
-		case SDL_WINDOWEVENT_HIDDEN:
-			Window::m_isFocused = false;
-			break;
-		case SDL_MOUSEMOTION:
-			mouseX = e.motion.x;
-			mouseY = e.motion.y;
-			break;
-		case SDL_KEYDOWN:
-			value = e.key.keysym.scancode;
-			inputs[value] = true;
-			downKeys[value] = true;
-			break;
-		case SDL_KEYUP:
-			value = e.key.keysym.scancode;
-			inputs[value] = false;
-			upKeys[value] = true;
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-			value = e.button.button;
-			mouseInput[value] = true;
-			downMouse[value] = true;
-			break;
-		case SDL_MOUSEBUTTONUP:
-			value = e.button.button;
-			mouseInput[value] = false;
-			upMouse[value] = true;
-			break;
-		default:
-			break;
-		}
-	}
+	m_lastKeysState = m_currentKeysState;
+	m_lastMouseButtonsState = m_currentMouseButtonsState;
 }
 
 bool Input::GetKey(Key keyCode)
 {
-	return inputs[static_cast<int>(keyCode)];
+	return m_currentKeysState[keyCode];
 }
 
 bool Input::GetKeyDown(Key keyCode)
 {
-	return downKeys[static_cast<int>(keyCode)];
+	return m_currentKeysState[keyCode] &&
+			!m_lastKeysState[keyCode];
 }
 
 bool Input::GetKeyUp(Key keyCode)
 {
-	return upKeys[static_cast<int>(keyCode)];
+	return !m_currentKeysState[keyCode] &&
+			m_lastKeysState[keyCode];
 }
 
 bool Input::GetMouse(Mouse button)
 {
-	return mouseInput[static_cast<int>(button)];
+	return m_currentMouseButtonsState[button];
 }
 
 bool Input::GetMouseDown(Mouse button)
 {
-	return downMouse[static_cast<int>(button)];
+	return m_currentMouseButtonsState[button] &&
+			!m_lastMouseButtonsState[button];
 }
 
 bool Input::GetMouseUp(Mouse button)
 {
-	return upMouse[static_cast<int>(button)];
+	return !m_currentMouseButtonsState[button] &&
+			m_lastMouseButtonsState[button];
 }
 
-vec2 Input::GetMousePosition()
+ivec2 Input::GetMousePosition()
 {
-	return vec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
-}
-
-void Input::SetCursorVisible(bool visible)
-{
-	if (visible)
-		SDL_ShowCursor(1);
-	else
-		SDL_ShowCursor(0);
+	return m_mousePosition;
 }

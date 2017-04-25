@@ -70,8 +70,12 @@ typedef std::shared_ptr<Shader> shader_ptr;
 class ShaderAsset : public AssetFactory
 {
 public:
-	ShaderAsset(const std::string& vertexPart, const std::string& fragmentPart);
-	ShaderAsset(const std::string& vertexPart, const std::string& geometryPart, const std::string& fragmentPart);
+	ShaderAsset(const std::string& vertexPartPath, 
+				const std::string& fragmentPartPath);
+
+	ShaderAsset(const std::string& vertexPartPath, 
+				const std::string& geometryPartPath, 
+				const std::string& fragmentPartPath);
 
 	asset_ptr Load() override;
 private:

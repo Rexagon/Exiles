@@ -16,8 +16,8 @@ std::shared_ptr<GameObject> GameObject::MakeCopy(GameObject * object)
 {
 	auto result = std::make_shared<GameObject>(object->m_name);
 
+	result->m_type = object->m_type;
 	result->m_parent = nullptr;
-	//result->m_meshes = object->m_meshes;
 	result->m_transformation = object->m_transformation;
 
 	for (auto& child : object->m_children) {
