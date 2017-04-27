@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-#include <stb_image.h>
+#include <SFML/Graphics.hpp>
 
 #include "FileSystem.h"
 #include "Log.h"
@@ -32,13 +32,11 @@ void Texture::LoadFromFile(const std::string & path)
 
 void Texture::LoadFromMemory(const void * data, unsigned int size)
 {
-	int width;
-	int height;
-	int channels;
+	sf::Image image;
 
-	unsigned char* image = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(data), size, &width, &height, &channels, STBI_rgb_alpha);
-
-	if (!image) throw std::runtime_error("Unable to load texture");
+	if (!image.loadFromMemory(data, size)) {
+		throw std::runtime_error("Unable to load texture");
+	}
 
 	glBindTexture(GL_TEXTURE_2D, m_id);
 
@@ -48,11 +46,9 @@ void Texture::LoadFromMemory(const void * data, unsigned int size)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
 
 	glGenerateMipmap(GL_TEXTURE_2D);
-
-	stbi_image_free(image);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

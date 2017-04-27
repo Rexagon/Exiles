@@ -69,7 +69,7 @@ public:
 			GLint infoLogLength;
 			glGetShaderiv(m_id, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-			GLchar *strInfoLog = new GLchar[infoLogLength + 1];
+			GLchar* strInfoLog = new GLchar[infoLogLength + 1];
 			glGetShaderInfoLog(m_id, infoLogLength, NULL, strInfoLog);
 
 			Log::Write("[ERROR]", m_typeString, "shader part compilation failed:", strInfoLog);
@@ -213,6 +213,16 @@ void Shader::SetUniform(const std::string & name, const ivec3 & u)
 	glUniform3i(GetUniformLocation(name), u.x, u.y, u.z);
 }
 
+void Shader::SetUniform(const std::string & name, const vec4 & u)
+{
+	glUniform4f(GetUniformLocation(name), u.x, u.y, u.z, u.w);
+}
+
+void Shader::SetUniform(const std::string & name, const ivec4 & u)
+{
+	glUniform4i(GetUniformLocation(name), u.x, u.y, u.z, u.w);
+}
+
 void Shader::SetUniformArray(const std::string & name, int* arr, int size)
 {
 	glUniform1iv(GetUniformLocation(name), size, arr);
@@ -243,9 +253,19 @@ void Shader::SetUniformArray(const std::string & name, ivec3* arr, int size)
 	glUniform3iv(GetUniformLocation(name), size, &arr[0][0]);
 }
 
+void Shader::SetUniformArray(const std::string & name, vec4 * arr, int size)
+{
+	glUniform4fv(GetUniformLocation(name), size, &arr[0][0]);
+}
 
-// TextureAsset //
-//////////////////
+void Shader::SetUniformArray(const std::string & name, ivec4 * arr, int size)
+{
+	glUniform4iv(GetUniformLocation(name), size, &arr[0][0]);
+}
+
+
+// ShaderAsset //
+/////////////////
 
 ShaderAsset::ShaderAsset(const std::string & vertexPartPath, 
 						 const std::string & fragmentPartPath) :
@@ -291,6 +311,7 @@ ShaderPart * ShaderAsset::GetShaderPart(const std::string & name, GLenum type)
 	if (it == m_shaderParts.end()) {
 		std::unique_ptr<ShaderPart> shaderPart = std::make_unique<ShaderPart>(type);
 		shaderPart->LoadFromFile(name);
+		shaderPart->Compile();
 		auto result = shaderPart.get();
 		m_shaderParts[name] = std::move(shaderPart);
 		return result;

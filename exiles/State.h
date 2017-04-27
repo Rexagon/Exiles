@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GUI.h"
+
 class State
 {
 public:
@@ -26,4 +28,8 @@ public:
 
 	// Вызывается при удалении сцены
 	virtual void OnClose() {}
+protected:
+	friend class Core;
+
+	GUI m_gui;
 };

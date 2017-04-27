@@ -3,11 +3,15 @@
 #include <memory>
 #include <stack>
 
+#include <GL/glew.h>
+
+#include <SFML/Graphics.hpp>
+
 #include "AssetManager.h"
-#include "Window.h"
 #include "Input.h"
 #include "State.h"
 #include "Math.h"
+#include "GUI.h"
 #include "Log.h"
 
 class Core
@@ -22,7 +26,7 @@ public:
 	// Останавливает цикл игры
 	static void Stop();
 
-	static Window* GetWindow() { return m_window.get(); }
+	static sf::RenderWindow* GetWindow() { return m_window.get(); }
 
 	// Добавляет сцену на вершину стэка. Вызывает у неё OnInit
 	template<class T, class ...Args>
@@ -51,7 +55,7 @@ private:
 
 	static std::stack<std::unique_ptr<State>> m_states; // Сцены
 	
-	static std::unique_ptr<Window> m_window;
+	static std::unique_ptr<sf::RenderWindow> m_window;
 
 	static bool m_isRunning;
 };

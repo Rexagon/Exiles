@@ -99,6 +99,11 @@ void Transformable::Rotate(const quat & rotation)
 	m_rotation = rotation * m_rotation;
 }
 
+quat Transformable::GetRotation() const
+{
+	return m_rotation;
+}
+
 vec3 Transformable::GetRotationEuler() const
 {
 	return glm::eulerAngles(m_rotation);

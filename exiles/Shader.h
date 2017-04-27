@@ -41,6 +41,8 @@ public:
 	void SetUniform(const std::string& name, const ivec2& u);
 	void SetUniform(const std::string& name, const vec3& u);
 	void SetUniform(const std::string& name, const ivec3& u);
+	void SetUniform(const std::string& name, const vec4& u);
+	void SetUniform(const std::string& name, const ivec4& u);
 
 
 	// SetUniformArray - объ€вл€ют массив в шейдере с именем name если такого нет 
@@ -52,6 +54,8 @@ public:
 	void SetUniformArray(const std::string& name, ivec2* arr, int size);
 	void SetUniformArray(const std::string& name, vec3* arr, int size);
 	void SetUniformArray(const std::string& name, ivec3* arr, int size);
+	void SetUniformArray(const std::string& name, vec4* arr, int size);
+	void SetUniformArray(const std::string& name, ivec4* arr, int size);
 private:
 	friend class ShaderAsset;
 

@@ -1,9 +1,7 @@
 #include "Core.h"
 
-#include <SDL2\SDL.h>
-
 std::stack<std::unique_ptr<State>> Core::m_states;
-std::unique_ptr<Window> Core::m_window;
+std::unique_ptr<sf::RenderWindow> Core::m_window;
 bool Core::m_isRunning = false;
 
 void Core::Init(const std::string & title)
@@ -12,26 +10,24 @@ void Core::Init(const std::string & title)
 		throw std::logic_error("Unable to init core after running");
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	sf::ContextSettings settings;
+	settings.depthBits = 24;
+	settings.stencilBits = 8;
+	//settings.antialiasingLevel = 4;
+	settings.majorVersion = 3;
+	settings.minorVersion = 3;
 
-	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		throw std::runtime_error("Unable to init SDL2");
+	m_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1024, 768), title, sf::Style::Default, settings);
+	if (!m_window) {
+		throw std::runtime_error("Unable to create window");
 	}
 
-	//TODO: load window from config
-	m_window = std::make_unique<Window>(title, 1024, 768);
+	m_window->setVerticalSyncEnabled(true);
+	m_window->setActive(true);
+
+	if (glewInit() != GLEW_OK) {
+		throw std::runtime_error("Unable to init glew");
+	}
 }
 
 void Core::Run()
@@ -39,26 +35,33 @@ void Core::Run()
 	if (m_window == nullptr) {
 		throw std::logic_error("Unable to run core without a window");
 	}
-
 	m_isRunning = true;
-	unsigned long long lastTime = SDL_GetPerformanceCounter();
+
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+	sf::Clock timer;
 	while (m_isRunning) {
 		HandleEvents();
 
-		unsigned long long currentTime = SDL_GetPerformanceCounter();
-		float dt = static_cast<float>(currentTime - lastTime) / SDL_GetPerformanceFrequency();
-		lastTime = currentTime;
+		float dt = timer.restart().asSeconds();
 
 		State* currentState;
 		if (currentState = PeekState()) {
+			currentState->m_gui.Update();
 			currentState->OnUpdate(dt);
 		}
+		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if (currentState = PeekState()) {
 			currentState->OnDraw(dt);
+
+			m_window->pushGLStates();
+			currentState->m_gui.Draw();
+			m_window->popGLStates();
 		}
 
-		m_window->Display();
+		m_window->display();
 	}
 
 	AssetManager::Clear();
@@ -67,8 +70,8 @@ void Core::Run()
 		PopState();
 	}
 
+	m_window->close();
 	m_window.reset();
-	SDL_Quit();
 }
 
 void Core::Stop()
@@ -99,41 +102,48 @@ void Core::HandleEvents()
 {
 	Input::Update();
 
-	SDL_Event e;
+	sf::Event e;
 
-	while (SDL_PollEvent(&e)) {
+	while (m_window->pollEvent(e)) {
 		int value = 0;
 		State* currentState = PeekState();
 
 		switch (e.type) {
-		case SDL_QUIT:
+		case sf::Event::Closed:
 			Core::Stop();
 			break;
-		case SDL_WINDOWEVENT_FOCUS_GAINED:
+		case sf::Event::GainedFocus:
 			if (currentState) {
 				currentState->OnFocusGained();
 			}
 			break;
-		case SDL_WINDOWEVENT_FOCUS_LOST:
-		case SDL_WINDOWEVENT_HIDDEN:
+		case sf::Event::LostFocus:
 			if (currentState) {
 				currentState->OnFocusLost();
 			}
 			break;
-		case SDL_MOUSEMOTION:
-			Input::m_mousePosition = ivec2(e.motion.x, e.motion.y);
+		case sf::Event::MouseMoved:
+			Input::m_mousePosition = ivec2(e.mouseMove.x, e.mouseMove.y);
 			break;
-		case SDL_KEYDOWN:
-			Input::m_currentKeysState[e.key.keysym.scancode] = true;
+		case sf::Event::KeyPressed:
+			if (e.key.code > -1 && e.key.code < sf::Keyboard::KeyCount) {
+				Input::m_currentKeysState[e.key.code] = true;
+			}
 			break;
-		case SDL_KEYUP:
-			Input::m_currentKeysState[e.key.keysym.scancode] = false;
+		case sf::Event::KeyReleased:
+			if (e.key.code > -1 && e.key.code < sf::Keyboard::KeyCount) {
+				Input::m_currentKeysState[e.key.code] = false;
+			}
 			break;
-		case SDL_MOUSEBUTTONDOWN:
-			Input::m_currentMouseButtonsState[e.button.button] = true;
+		case sf::Event::MouseButtonPressed:
+			if (e.mouseButton.button > -1 && e.mouseButton.button < sf::Mouse::ButtonCount) {
+				Input::m_currentMouseButtonsState[e.mouseButton.button] = true;
+			}
 			break;
-		case SDL_MOUSEBUTTONUP:
-			Input::m_currentMouseButtonsState[e.button.button] = false;
+		case sf::Event::MouseButtonReleased:
+			if (e.mouseButton.button > -1 && e.mouseButton.button < sf::Mouse::ButtonCount) {
+				Input::m_currentMouseButtonsState[e.mouseButton.button] = false;
+			}
 			break;
 		default:
 			break;

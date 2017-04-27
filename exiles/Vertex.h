@@ -5,7 +5,8 @@
 class Vertex
 {
 public:
-	Vertex(const vec3& position, const vec2& texcoords, const vec3& normal, const vec3& tangent) :
+	Vertex(const vec3& position, const vec2& texcoords = vec2(), 
+		   const vec3& normal = vec3(), const vec3& tangent = vec3()) :
 		position(position), texcoords(texcoords), normal(normal), tangent(tangent) {}
 
 	vec3 position;

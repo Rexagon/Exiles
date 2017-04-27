@@ -53,10 +53,10 @@ void Mesh::InitBoneData(const std::vector<VertexBoneData>& boneData)
 	glBufferData(GL_ARRAY_BUFFER, boneData.size() * sizeof(VertexBoneData), &boneData[0], GL_STATIC_DRAW);
 
 	// Weights attribute
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (GLvoid*)0);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (GLvoid*)0);
 	glEnableVertexAttribArray(4);
 	// Indices attribute
-	glVertexAttribIPointer(4, 4, GL_INT, sizeof(VertexBoneData), (GLvoid*)(4 * sizeof(float)));
+	glVertexAttribIPointer(5, 4, GL_INT, sizeof(VertexBoneData), (GLvoid*)(4 * sizeof(float)));
 	glEnableVertexAttribArray(5);
 
 	glBindVertexArray(0);
@@ -64,7 +64,9 @@ void Mesh::InitBoneData(const std::vector<VertexBoneData>& boneData)
 
 void Mesh::Draw()
 {
-	m_material->Bind(0);
+	if (m_material) {
+		m_material->Bind(0);
+	}
 
 	glBindVertexArray(m_VAO);
 	glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, nullptr);

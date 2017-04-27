@@ -24,7 +24,7 @@ public:
 	virtual void Rotate(float x, float y, float z);
 	virtual void Rotate(const vec3& eulerAngles);
 	virtual void Rotate(const quat& rotation);
-	quat GetRotation() const { return m_rotation; }
+	quat GetRotation() const;
 	vec3 GetRotationEuler() const;
 
 	virtual void Scale(float s);

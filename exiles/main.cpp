@@ -1,16 +1,17 @@
 #include "Core.h"
-#include "Window.h"
 
 #include "MainMenu.h"
 
 int main()
 {
 	try {
+		Log::Create();
+
 		Core::Init("Exiles");
 		Core::Push<MainMenu>();
 		Core::Run();
 	}
-	catch (const std::exception& e) {
+	catch (const std::runtime_error& e) {
 		Log::Write("[ERROR]", e.what());
 	}
 

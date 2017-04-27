@@ -8,9 +8,6 @@
     <ClCompile Include="Input.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="MainMenu.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -45,7 +42,19 @@
       <Filter>Rendering\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Widget.cpp">
-      <Filter>Rendering\GUI</Filter>
+      <Filter>Rendering\GUI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>Rendering\GUI\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="VerticalLayout.cpp">
+      <Filter>Rendering\GUI\Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="Layout.cpp">
+      <Filter>Rendering\GUI\Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="HorizontalLayout.cpp">
+      <Filter>Rendering\GUI\Layouts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +88,12 @@
     <Filter Include="Rendering\GUI">
       <UniqueIdentifier>{a14ee827-a518-4e3a-b346-0b3943e2a6f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering\GUI\Widgets">
+      <UniqueIdentifier>{ef12851b-bd92-48c8-b462-2ba7ee960c29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\GUI\Layouts">
+      <UniqueIdentifier>{b7fac046-3f93-43c1-9af9-94bdfa8033dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h">
@@ -86,9 +101,6 @@
     </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="MainMenu.h">
       <Filter>Game</Filter>
@@ -129,17 +141,29 @@
     <ClInclude Include="Mesh.h">
       <Filter>Rendering\Assets\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>Rendering\Assets\Texture\Material</Filter>
     </ClInclude>
     <ClInclude Include="GUI.h">
       <Filter>Rendering\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Core\Stuff</Filter>
+    </ClInclude>
     <ClInclude Include="Widget.h">
-      <Filter>Rendering\GUI</Filter>
+      <Filter>Rendering\GUI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>Rendering\GUI\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="VerticalLayout.h">
+      <Filter>Rendering\GUI\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="Layout.h">
+      <Filter>Rendering\GUI\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="HorizontalLayout.h">
+      <Filter>Rendering\GUI\Layouts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
